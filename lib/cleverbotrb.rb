@@ -23,6 +23,10 @@ require 'uri'
 require 'net/http'
 require 'digest'
 
+##
+# This class represent cleverbot session
+#
+# @author d0p1
 class Cleverbot
 
 	HOST = "www.cleverbot.com"
@@ -40,19 +44,26 @@ class Cleverbot
 
 	RESPONSE_KEY = [
 		'message', 'sessionid', 'logurl', 'vText8',
-    'vText7', 'vText6', 'vText5', 'vText4',
-    'vText3', 'vText2', 'prevref', '',
-    'emotionalhistory', 'ttsLocMP3', 'ttsLocTXT', 'ttsLocTXT3',
-    'ttsText', 'lineref', 'lineURL', 'linePOST',
-    'lineChoices', 'lineChoicesAbbrev', 'typingData', 'divert'
+		'vText7', 'vText6', 'vText5', 'vText4',
+		'vText3', 'vText2', 'prevref', '',
+		'emotionalhistory', 'ttsLocMP3', 'ttsLocTXT', 'ttsLocTXT3',
+		'ttsText', 'lineref', 'lineURL', 'linePOST',
+		'lineChoices', 'lineChoicesAbbrev', 'typingData', 'divert'
 	]
 
+	##
+	# Create a new session
 	def initialize
 		@cookies = {}
 		@params = PARAMS
 		prepare
 	end
 
+	##
+	# send a message to cleverbot and get an answer
+	#
+	# @param message [String]
+	# @return [String] the answer statement
 	def send(message)
 		body = @params
 		body["stimulus"] = message
