@@ -30,7 +30,7 @@ require 'digest'
 class Cleverbot
 
 	HOST = "www.cleverbot.com"
-	ENDPOINT = "/webservicemin?uc=255&"
+	ENDPOINT = "/webservicemin?uc=321&"
 
 	PARAMS = {
 		'stimulus' => '', 'start' => 'y', 'sessionid' => '',
