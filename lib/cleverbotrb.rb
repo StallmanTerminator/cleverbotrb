@@ -30,7 +30,7 @@ require 'digest'
 class Cleverbot
 
 	HOST = "www.cleverbot.com"
-	ENDPOINT = "/webservicemin?uc=321&"
+	ENDPOINT = "/webservicemin?uc=3210"
 
 	PARAMS = {
 		'stimulus' => '', 'start' => 'y', 'sessionid' => '',
@@ -53,9 +53,10 @@ class Cleverbot
 
 	##
 	# Create a new session
-	def initialize
+	def initialize (api_key="DEFAULT")
 		@cookies = {}
 		@params = PARAMS
+		@endpoint = ENDPOINT + "&botapi=#{api_key}"
 		prepare
 	end
 
@@ -78,7 +79,7 @@ class Cleverbot
 		}
 
 		req = Net::HTTP.new(HOST, 80)
-		resp = req.post(ENDPOINT, body_str, headers)
+		resp = req.post(@endpoint, body_str, headers)
 		if resp.code != "200"
 			return nil
 		end
