@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 	s.name        = 'cleverbotrb'
-	s.version     = '0.1.0'
-	s.date        = '2016-10-18'
+	s.version     = '0.1.1'
+	s.date        = '2017-02-10'
 	s.summary     = "Cleverbot"
 	s.description = "A simple cleverbot gem"
 	s.authors     = ["d0p1"]
