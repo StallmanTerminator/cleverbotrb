@@ -21,7 +21,7 @@
 
 require 'uri'
 require 'net/http'
-require 'digest'
+require 'json'
 
 ##
 # This class represent cleverbot session
@@ -30,34 +30,16 @@ require 'digest'
 class Cleverbot
 
 	HOST = "www.cleverbot.com"
-	ENDPOINT = "/webservicemin?uc=777"
-
-	PARAMS = {
-		'stimulus' => '', 'start' => 'y', 'sessionid' => '',
-		'vText8' => '', 'vText7' => '', 'vText6' => '', 'vText5' => '',
-		'vText4' => '', 'vText3' => '', 'vText2' => '',
-		'icognoid' => 'wsf', 'icognocheck' => '', 'fno' => '0',
-		'prevref' => '', 'emotionaloutput' => '', 'asbotname' => '',
-		'ttsvoice' => '', 'typing' => '', 'lineref' => '',
-		'sub' => 'Say', 'islearning' => '1', 'cleanslate' => 'false'
-	}
-
-	RESPONSE_KEY = [
-		'message', 'sessionid', 'logurl', 'vText8',
-		'vText7', 'vText6', 'vText5', 'vText4',
-		'vText3', 'vText2', 'prevref', '',
-		'emotionalhistory', 'ttsLocMP3', 'ttsLocTXT', 'ttsLocTXT3',
-		'ttsText', 'lineref', 'lineURL', 'linePOST',
-		'lineChoices', 'lineChoicesAbbrev', 'typingData', 'divert'
-	]
+	ENDPOINT = "/getreply?"
 
 	##
 	# Create a new session
 	def initialize (api_key="DEFAULT")
-		@cookies = {}
-		@params = PARAMS
-		@endpoint = ENDPOINT + "&botapi=#{api_key}"
-		prepare
+		@params = {
+			"key" => api_key,
+			"wrapper" => "cleverbotrb"
+		}
+		@endpoint = ENDPOINT
 	end
 
 	##
@@ -66,52 +48,25 @@ class Cleverbot
 	# @param message [String]
 	# @return [String] the answer statement
 	def send(message)
-		body = @params
-		body["stimulus"] = message
-		body["icognocheck"] = digest(URI.encode_www_form(body)[9...35])
-		body_str = URI.encode_www_form(body) #params_encode(body)
+		url_arg = @params
+		url_arg["input"] = message
+		url_arg_str = URI.encode_www_form(url_arg)
 
 		headers = {
-			'Content-Type' => 'application/x-www-form-urlencoded',
-			'Content-Length' => body_str.size.to_s,
-			'Cache-Control' => 'no-cache',
-			'Cookie' => cookies_encode(@cookies)
+			'User-Agent' => 'cleverbotrb https://github.com/d0p1s4m4/cleverbotrb',
 		}
 
 		req = Net::HTTP.new(HOST, 80)
-		resp = req.post(@endpoint, body_str, headers)
+		resp = req.get(@endpoint + url_arg_str, headers)
 		if resp.code != "200"
 			return nil
 		end
-		response = resp.body.split("\r")
-		save_data(response)
-		return response[0]
+		response = JSON.parse(resp.body)
+		@params['cs'] = response['cs']
+		return response['output']
 	end
 
-	private
-
-	def prepare
-		req = Net::HTTP.new(HOST, 80)
-		resp = req.get('/')
-		raw_cookies = resp.response['set-cookie']
-		if not raw_cookies.nil?
-			raw_cookies.scan(/(\w+)=([\w|\/]+)/) do |key, value|
-				@cookies[key] = value
-			end
-		end
-	end
-
-	def digest(data)
-		Digest::MD5.hexdigest data
-	end
-
-	def save_data(response)
-		RESPONSE_KEY.each_with_index do |key, index|
-			@params[key] = response[index]
-		end
-	end
-
-	def cookies_encode(cookies)
-		cookies.to_a.map { |cookie| "#{cookie[0]}=#{cookie[1]}" }.join(";")
+	def reset
+		params.delete('cs')
 	end
 end

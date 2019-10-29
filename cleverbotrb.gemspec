@@ -1,9 +1,8 @@
 Gem::Specification.new do |s|
 	s.name        = 'cleverbotrb'
-	s.version     = '0.1.1'
-	s.date        = '2017-02-10'
+	s.version     = '0.2.0'
 	s.summary     = "Cleverbot"
-	s.description = "A simple cleverbot gem"
+	s.description = "Cleverbot API wrapper"
 	s.authors     = ["d0p1"]
 	s.email       = 'd0p1@yahoo.com'
 	s.files       = ["lib/cleverbotrb.rb"]
