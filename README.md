@@ -9,6 +9,6 @@ ruby gem for cleverbot
 ```ruby
 require 'cleverbotrb'
 
-bot = Cleverbot.new
+bot = Cleverbot.new("your api key")
 puts bot.send("Hello")
 ```

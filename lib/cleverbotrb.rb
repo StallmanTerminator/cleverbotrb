@@ -34,7 +34,7 @@ class Cleverbot
 
 	##
 	# Create a new session
-	def initialize (api_key="DEFAULT")
+	def initialize (api_key)
 		@params = {
 			"key" => api_key,
 			"wrapper" => "cleverbotrb"
